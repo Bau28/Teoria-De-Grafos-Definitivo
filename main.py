@@ -1,3 +1,4 @@
+from ejercicios.practica1 import *
 from ejercicios.practica2 import *
 
 def main():
