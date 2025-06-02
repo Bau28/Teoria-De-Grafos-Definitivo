@@ -8,7 +8,14 @@ def cuenta_grado(grafo_lista):
     Ejemplo retorno: 
         {'A': 1, 'B': 3, 'C': 2}
     '''
-    pass
+    vertices, aristas = grafo_lista
+    grados = {v: 0 for v in vertices}
+
+    for origen, destino in aristas:
+        grados[origen] += 1
+        grados[destino] += 1
+
+    return grados
 
 def vertice_aislado(grafo_lista):
     '''
@@ -18,7 +25,16 @@ def vertice_aislado(grafo_lista):
     Ejemplo formato salida: 
         ['D','E']
     '''
-    pass
+    vertices, aristas = grafo_lista
+    conectados = set()
+
+    for origen, destino in aristas:
+        conectados.add(origen)
+        conectados.add(destino)
+
+    aislados = [v for v in vertices if v not in conectados]
+    return aislados
+    
 
 def componentes_conexas(grafo_lista):
     '''
@@ -28,14 +44,38 @@ def componentes_conexas(grafo_lista):
     Ejemplo formato salida: 
         [['A, 'B','C'], ['D','E']]
     '''
-    pass
+    vertices, aristas = grafo_lista
+    
+    adyacencia = {v: [] for v in vertices}
+    for origen, destino in aristas:
+        adyacencia[origen].append(destino)
+        adyacencia[destino].append(origen)  
+
+    visitados = set()
+    componentes = []
+
+    def dfs(v, componente):
+        visitados.add(v)
+        componente.append(v)
+        for vecino in adyacencia[v]:
+            if vecino not in visitados:
+                dfs(vecino, componente)
+
+    for v in vertices:
+        if v not in visitados:
+            componente = []
+            dfs(v, componente)
+            componentes.append(componente)
+
+    return componentes
 
 def es_conexo(grafo_lista):
     '''
     Dado un grafo en representacion de lista, y utilizando la funciÃ³n "componentes_conexas"
     devuelve True/False si el grafo es o no conexo.
     '''
-    pass
+    componentes = componentes_conexas(grafo_lista)
+    return len(componentes) == 1
     
 def es_completo(grafo_lista):
     '''
@@ -45,7 +85,17 @@ def es_completo(grafo_lista):
     Ejemplo formato salida:
     	True
     '''
-    pass
+    vertices, aristas = grafo_lista
+    n = len(vertices)
+    
+    conexiones_posibles = set()
+    
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                conexiones_posibles.add((vertices[i], vertices[j]))
+    
+    return conexiones_posibles.issubset(set(aristas))
     	
 def aristas_de(grafo, vertice):
     '''
@@ -56,7 +106,17 @@ def aristas_de(grafo, vertice):
     Ejemplo formato salida:
     	[('A', 'B'), ('A', 'C')]
     '''
-    pass
+    cantidad_vertices = int(grafo[0])
+    aristas_str = grafo[1 + cantidad_vertices:]
+
+    aristas_salientes = []
+
+    for a in aristas_str:
+        origen, destino = a.split()
+        if origen == vertice:
+            aristas_salientes.append((origen, destino))
+
+    return aristas_salientes
 
 def grafo_inducido(grafo, subconjunto_vertices):
     '''
@@ -68,7 +128,17 @@ def grafo_inducido(grafo, subconjunto_vertices):
     Ejemplo formato salida:
     	(['A', 'B', 'C'], [('A', 'B'), ('A', 'C')])
     '''
-    pass
+    cantidad_vertices = int(grafo[0])
+    aristas_str = grafo[1 + cantidad_vertices:]
+
+    aristas_inducidas = []
+
+    for a in aristas_str:
+        origen, destino = a.split()
+        if origen in subconjunto_vertices and destino in subconjunto_vertices:
+            aristas_inducidas.append((origen, destino))
+
+    return (subconjunto_vertices, aristas_inducidas)
 
 def grafo_complementario(grafo):
     '''
@@ -78,4 +148,19 @@ def grafo_complementario(grafo):
     Ejemplo formato salida:
     	(['A', 'B', 'C'], [('A', 'C'), ('B', 'A'), ('C', 'A'), ('C', 'B')])
     '''
-    pass
+    cantidad_vertices = int(grafo[0])
+    vertices = grafo[1:cantidad_vertices + 1]
+    aristas_str = grafo[1 + cantidad_vertices:]
+
+    aristas_originales = set()
+    for a in aristas_str:
+        origen, destino = a.split()
+        aristas_originales.add((origen, destino))
+
+    aristas_complementarias = []
+    for origen in vertices:
+        for destino in vertices:
+            if origen != destino and (origen, destino) not in aristas_originales:
+                aristas_complementarias.append((origen, destino))
+
+    return (vertices, aristas_complementarias)
