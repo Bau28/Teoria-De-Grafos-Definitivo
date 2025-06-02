@@ -18,11 +18,10 @@ def lee_grafo_stdin(grafo):
     Ejemplo retorno: 
         (['A','B','C'],[('A','B'),('B','C'),('C','B')])
     """
-    n = int(grafo[0])                 # cantidad de vértices
-    vertices = grafo[1:1+n]           # lista de vértices
-    aristas_str = grafo[1+n:]         # lista de aristas en formato string
+    n = int(grafo[0])                 
+    vertices = grafo[1:1+n]           
+    aristas_str = grafo[1+n:]         
 
-    # Convertir aristas a tuplas (origen, destino)
     aristas = [tuple(ari.split()) for ari in aristas_str]
 
     return vertices, aristas
@@ -43,7 +42,7 @@ def lee_grafo_archivo(file_path):
         (['A','B','C'],[('A','B'),('B','C'),('C','B')])
     '''
     with open(file_path, 'r') as f:
-        lineas = [line.strip() for line in f if line.strip()]  # elimina espacios y líneas vacías
+        lineas = [line.strip() for line in f if line.strip()]  
     
     n = int(lineas[0])
     vertices = lineas[1:1+n]
